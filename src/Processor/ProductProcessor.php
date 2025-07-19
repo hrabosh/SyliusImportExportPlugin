@@ -238,21 +238,7 @@ final class ProductProcessor implements ResourceProcessorInterface
         }
     }
 
-    private function setDetails(ProductInterface $product, array $data): void
-    {
-
-            $short = $data['Short_description'] ?? '';
-
-            if (!mb_check_encoding($short, 'UTF-8')) {
-                dump('Invalid encoding: ', $short);
-            }
-
-            // temporary debug to localize the bad string
-            if (strpos($short, "\xC5") !== false) {
-                dump('Found problematic byte in short_description:', bin2hex($short), $short);
-            }
-
-
+    private function setDetails(ProductInterface $product, array $data): void {
         $product->setCurrentLocale($data['Locale']);
         $product->setFallbackLocale($data['Locale']);
 
@@ -263,7 +249,7 @@ final class ProductProcessor implements ResourceProcessorInterface
         $product->setMetaDescription(substr($this->sanitize($data['Meta_description']), 0, 255));
         $product->setMetaKeywords(substr($this->sanitize($data['Meta_keywords']), 0, 255));
 
-        $product->setSlug($product->getSlug() ?: $this->slugGenerator->generate($product->getName()));
+        $product->setSlug($product->getSlug() ?: $this->slugGenerator->generate($product->getName(), $product->getCode()));
     }
 
     private function setVariant(ProductInterface $product, array $data): void

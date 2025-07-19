@@ -389,13 +389,8 @@ final class ProductProcessor implements ResourceProcessorInterface
             return null;
         }
 
-        // Force to UTF-8
-        $value = mb_convert_encoding($value, 'UTF-8', 'UTF-8');
-
-        // Remove invalid UTF-8 sequences
-        $value = preg_replace('/[^\PC\s]/u', '', $value);
-
-        return $value;
+        // Remove non-UTF8 characters and invalid bytes
+        return iconv('UTF-8', 'UTF-8//IGNORE', $value);
     }
 
 }

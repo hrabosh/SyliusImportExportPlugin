@@ -244,13 +244,12 @@ final class ProductProcessor implements ResourceProcessorInterface
             $short = $data['Short_description'] ?? '';
 
             if (!mb_check_encoding($short, 'UTF-8')) {
-                dump($short);
                 dump('Invalid encoding: ', $short);
             }
 
             // temporary debug to localize the bad string
             if (strpos($short, "\xC5") !== false) {
-                dump('Found problematic byte in short_description:', bin2hex($short));
+                dump('Found problematic byte in short_description:', bin2hex($short), $short);
             }
 
 

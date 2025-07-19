@@ -249,7 +249,7 @@ final class ProductProcessor implements ResourceProcessorInterface
         $product->setMetaDescription(substr($this->sanitize($data['Meta_description']), 0, 255));
         $product->setMetaKeywords(substr($this->sanitize($data['Meta_keywords']), 0, 255));
 
-        $product->setSlug($product->getSlug() ?: $this->slugGenerator->generate($product->getName(), $product->getCode()));
+        $product->setSlug($product->getSlug() ?: $this->slugGenerator->generate($product->getName(), [$product->getCode()]));
     }
 
     private function setVariant(ProductInterface $product, array $data): void

@@ -244,6 +244,7 @@ final class ProductProcessor implements ResourceProcessorInterface
             $short = $data['Short_description'] ?? '';
 
             if (!mb_check_encoding($short, 'UTF-8')) {
+                file_put_contents('/var/log/problematic.csv', $short . PHP_EOL, FILE_APPEND);
                 dump('Invalid encoding: ', $short);
             }
 

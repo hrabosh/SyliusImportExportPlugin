@@ -243,12 +243,13 @@ final class ProductProcessor implements ResourceProcessorInterface
         $product->setCurrentLocale($data['Locale']);
         $product->setFallbackLocale($data['Locale']);
 
-        $product->setName(substr($data['Name'], 0, 255));
+        $product->setName(substr($this->sanitize($data['Name']), 0, 255));
         $product->setEnabled((bool) $data['Enabled']);
-        $product->setDescription($data['Description']);
-        $product->setShortDescription(substr($data['Short_description'], 0, 255));
-        $product->setMetaDescription(substr($data['Meta_description'], 0, 255));
-        $product->setMetaKeywords(substr($data['Meta_keywords'], 0, 255));
+        $product->setDescription($this->sanitize($data['Description']));
+        $product->setShortDescription(substr($this->sanitize($data['Short_description']), 0, 255));
+        $product->setMetaDescription(substr($this->sanitize($data['Meta_description']), 0, 255));
+        $product->setMetaKeywords(substr($this->sanitize($data['Meta_keywords']), 0, 255));
+
         $product->setSlug($product->getSlug() ?: $this->slugGenerator->generate($product->getName()));
     }
 
@@ -382,4 +383,19 @@ final class ProductProcessor implements ResourceProcessorInterface
             $product->addImage($productImage);
         }
     }
+
+    private function sanitize(?string $value): ?string {
+        if ($value === null) {
+            return null;
+        }
+
+        // Force to UTF-8
+        $value = mb_convert_encoding($value, 'UTF-8', 'UTF-8');
+
+        // Remove invalid UTF-8 sequences
+        $value = preg_replace('/[^\PC\s]/u', '', $value);
+
+        return $value;
+    }
+
 }

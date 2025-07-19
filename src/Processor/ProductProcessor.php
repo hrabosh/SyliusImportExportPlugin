@@ -389,8 +389,11 @@ final class ProductProcessor implements ResourceProcessorInterface
             return null;
         }
 
-        // Remove non-UTF8 characters and invalid bytes
-        return iconv('UTF-8', 'UTF-8//IGNORE', $value);
+        // Normalize encoding
+        $output = iconv('UTF-8', 'UTF-8//IGNORE', $value);
+
+        // Replace non-printable/control characters (except newline, tab, etc.)
+        return preg_replace('/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/u', '', $output);
     }
 
 }
